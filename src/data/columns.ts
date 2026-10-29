@@ -1,0 +1,32 @@
+export const columns = [
+  {
+    slug: "frontier",
+    title: "前沿模型",
+    number: "01",
+    label: "FOLLOW THE FRONTIER",
+    description: "每周选一个近期模型，理解它的能力、关键机制与适用边界。",
+    rhythm: "目标：每周一篇",
+    topics: ["WeMM-Embedding", "Jev", "Unlimited OCR 2", "Qwen 4"],
+    approach: "从原论文和官方代码出发，梳理模型解决的问题、关键设计，再用具体样例记录效果与局限。",
+  },
+  {
+    slug: "algorithms",
+    title: "算法与组件",
+    number: "02",
+    label: "BUILD THE FOUNDATIONS",
+    description: "从机器学习到深度学习，把直觉、公式、实现和使用条件连起来。",
+    rhythm: "按主题积累",
+    topics: ["Transformer", "BM25", "SVM", "文本表征与分词"],
+    approach: "先解释一个算法为什么需要，再拆解数学形式和关键步骤，配合实现与小实验理解它何时有效。",
+  },
+  {
+    slug: "open-source",
+    title: "开源项目拆解",
+    number: "03",
+    label: "THINK IN SYSTEMS",
+    description: "沿着业务主链路阅读源码，理解模块如何协作，以及设计中的取舍。",
+    rhythm: "读源码，做验证",
+    topics: ["Agent 运行时", "检索与推荐", "多模态视频处理"],
+    approach: "从项目入口追踪一次真实请求，画清模块边界与数据流，结合运行结果分析架构、业务逻辑和可复用的设计。",
+  },
+] as const;

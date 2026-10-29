@@ -1,0 +1,49 @@
+---
+import MainGridLayout from "../../layouts/MainGridLayout.astro";
+import PostCard from "../../components/PostCard.astro";
+import { columns } from "../../data/columns";
+import { getSortedPosts } from "../../utils/content-utils";
+import { getPostUrlBySlug, url } from "../../utils/url-utils";
+
+export function getStaticPaths() {
+  return columns.map(column => ({ params: { slug: column.slug }, props: { column } }));
+}
+const { column } = Astro.props;
+const posts = (await getSortedPosts()).filter(post => post.data.category === column.title);
+---
+<MainGridLayout title={column.title} description={column.description}>
+  <section class="card-base p-6 md:p-9 mb-4 column-intro text-black/80 dark:text-white/80">
+    <a class="back-link" href={url("/")}>← 全部文章</a>
+    <p class="column-label">{column.number} / {column.label}</p>
+    <h1>{column.title}</h1>
+    <p class="description">{column.description}</p>
+    <p class="approach">{column.approach}</p>
+    <div class="topic-list" aria-label="选题方向">
+      {column.topics.map(topic => <span>{topic}</span>)}
+    </div>
+    <p class="rhythm">{column.rhythm} · 已发布 {posts.length} 篇</p>
+  </section>
+  <div class="flex flex-col gap-4">
+    {posts.map(entry => <PostCard
+      entry={entry} title={entry.data.title} tags={entry.data.tags} category={entry.data.category}
+      published={entry.data.published} updated={entry.data.updated} url={getPostUrlBySlug(entry.slug)}
+      image={entry.data.image} description={entry.data.description} draft={entry.data.draft} style=""
+    />)}
+  </div>
+  {posts.length === 0 && <section class="card-base p-6 md:p-9 empty-column text-black/80 dark:text-white/80">
+    <p>这个栏目尚未发布文章。</p>
+    <a href={url("/")}>先浏览已有笔记 →</a>
+  </section>}
+</MainGridLayout>
+<style>
+  .back-link { color: var(--primary); font-size: .85rem; }
+  .column-label { margin-top: 2rem; color: var(--primary); font-size: .7rem; letter-spacing: .12em; }
+  h1 { margin: .75rem 0; font-size: 2rem; font-weight: 700; }
+  .description { font-size: 1.05rem; line-height: 1.85; }
+  .approach { margin-top: 1rem; opacity: .65; line-height: 1.9; }
+  .topic-list { display: flex; flex-wrap: wrap; gap: .5rem; margin: 1.5rem 0 1rem; }
+  .topic-list span { border: 1px solid var(--line-divider); padding: .35rem .75rem; border-radius: .5rem; font-size: .8rem; }
+  .rhythm { color: var(--primary); font-size: .8rem; }
+  .empty-column p { opacity: .6; }
+  .empty-column a { display: inline-block; margin-top: 1rem; color: var(--primary); }
+</style>

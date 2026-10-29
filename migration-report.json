@@ -1,0 +1,43 @@
+{
+  "published": [
+    {
+      "source": "NLPtext.md",
+      "title": "NLP 文本表征：Word Embedding + Tokenizer + BPE 算法全解",
+      "slug": "nlp-text-representations",
+      "old": "/2026/02/25/NLPtext/",
+      "new": "/blogs/posts/nlp-text-representations/",
+      "code_blocks": 11,
+      "display_math": 4,
+      "images": 0,
+      "code_preserved": true,
+      "math_preserved": true,
+      "original_sha256": "cc660e8e07bd8fd097a59ed529e892fb47b63354d7bfe945969e8319834495f3"
+    },
+    {
+      "source": "Thoughts_20260611.md",
+      "title": "多想、多做、边试、边学",
+      "slug": "thoughts-20260611",
+      "old": "/2026/06/11/Thoughts_20260611/",
+      "new": "/blogs/posts/thoughts-20260611/",
+      "code_blocks": 0,
+      "display_math": 0,
+      "images": 0,
+      "code_preserved": true,
+      "math_preserved": true,
+      "original_sha256": "71797322f812372c3651420f13f75cfceaab42ce80dcb1fc80a9847cf8157734"
+    },
+    {
+      "source": "Transformer_main.md",
+      "title": "Transformer 核心架构逐层拆解",
+      "slug": "transformer",
+      "old": "/2026/03/02/Transformer_main/",
+      "new": "/blogs/posts/transformer/",
+      "code_blocks": 1,
+      "display_math": 3,
+      "images": 6,
+      "code_preserved": true,
+      "math_preserved": true,
+      "original_sha256": "263d60cdec9aff590d4fa0bc8ccbd984beafcfb78c6005b3e8c8712325bcd381"
+    }
+  ]
+}
