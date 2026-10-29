@@ -201,15 +201,8 @@ class TableOfContents extends HTMLElement {
     };
 
     connectedCallback() {
-        // wait for the onload animation to finish, which makes the `getBoundingClientRect` return correct values
-        const element = document.querySelector('.prose');
-        if (element) {
-            element.addEventListener('animationend', () => {
-                this.init();
-            }, { once: true });
-        } else {
-            console.debug('Animation element not found');
-        }
+        // Initialize even when reduced-motion disables the entrance animation.
+        requestAnimationFrame(() => { if (this.isConnected) this.init(); });
     };
 
     init() {

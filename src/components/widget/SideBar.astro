@@ -1,22 +1,27 @@
 ---
 import type { MarkdownHeading } from "astro";
-import Categories from "./Categories.astro";
+import { columns } from "../../data/columns";
+import { getSortedPosts } from "../../utils/content-utils";
+import { getCategoryUrl, url } from "../../utils/url-utils";
+import { siteConfig } from "../../config";
 import Profile from "./Profile.astro";
-import Tag from "./Tags.astro";
-
-interface Props {
-	class?: string;
-	headings?: MarkdownHeading[];
-}
-
-const className = Astro.props.class;
+import TOC from "./TOC.astro";
+interface Props { class?: string; headings?: MarkdownHeading[]; }
+const { headings = [] } = Astro.props;
+const posts = await getSortedPosts();
+const showTOC = siteConfig.toc.enable && headings.length > 0 && Astro.url.pathname.startsWith(url("/posts/"));
+const essayCount = posts.filter(post => post.data.category === "随笔").length;
 ---
-<div id="sidebar" class:list={[className, "w-full"]}>
-    <div class="flex flex-col w-full gap-4 mb-4">
-        <Profile></Profile>
-    </div>
-    <div id="sidebar-sticky" class="transition-all duration-700 flex flex-col w-full gap-4 top-4 sticky top-4">
-        <Categories class="onload-animation" style="animation-delay: 150ms"></Categories>
-        <Tag class="onload-animation" style="animation-delay: 200ms"></Tag>
-    </div>
-</div>
+<aside id="sidebar" class:list={["notes-sidebar", Astro.props.class]} aria-label="作者与阅读导航">
+  <Profile />
+  <div id="sidebar-sticky">
+    {showTOC ? <section id="toc-wrapper" class="notes-side-card notes-toc-card" aria-labelledby="toc-title"><h2 id="toc-title">这篇笔记的目录</h2><div id="toc-inner-wrapper"><div id="toc"><TOC headings={headings} /></div></div></section> : <section class="notes-side-card notes-small-note"><span>写在这里</span><p>先把一个小实验做扎实，<br />再把一个问题想明白。</p><small>多保留一点证据，少急着下结论。</small></section>}
+    <section class="notes-side-card notes-side-columns"><h2>按栏目阅读</h2>
+      {columns.map(column => {
+        const count = posts.filter(post => post.data.category === column.title).length;
+        return <a href={url(`/columns/${column.slug}/`)}>{column.title}<span>{count ? String(count).padStart(2, "0") : "待开篇"}</span></a>;
+      })}
+      {essayCount > 0 && <a href={getCategoryUrl("随笔")}>随笔<span>{String(essayCount).padStart(2, "0")}</span></a>}
+    </section>
+  </div>
+</aside>

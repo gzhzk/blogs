@@ -1,36 +1,20 @@
 ---
 import { columns } from "../data/columns";
+import { getSortedPosts } from "../utils/content-utils";
 import { url } from "../utils/url-utils";
+const posts = await getSortedPosts();
+const subtitles = ["跟上新想法", "把基础弄明白", "沿着源码看系统"];
+const summaries = ["每周读一个模型，理解能力与边界。", "从直觉到公式，再到动手实现。", "追一次请求，理解模块与取舍。"];
+const keywords = ["论文 · 复现 · 样例", "Transformer · BM25 · SVM", "架构 · 业务 · 数据流"];
 ---
-<section class="card-base columns-overview mb-4 p-6 md:p-8 text-black/80 dark:text-white/80" aria-labelledby="columns-title">
-  <div class="columns-heading">
-    <h1 id="columns-title">学习与实践</h1>
-    <p>看新模型，补基础，拆项目。</p>
-  </div>
-  <div class="columns-grid">
-    {columns.map(column => (
-      <a class="column-link" href={url(`/columns/${column.slug}/`)}>
-        <span class="column-number">{column.number}</span>
-        <h2>{column.title}<span aria-hidden="true">↗</span></h2>
-        <p>{column.description}</p>
-        <span class="column-rhythm">{column.rhythm}</span>
-      </a>
-    ))}
-  </div>
+<section id="columns" class="notes-columns" aria-label="三个学习栏目">
+  {columns.map((column, index) => {
+    const count = posts.filter(post => post.data.category === column.title).length;
+    return <a class={`notes-column column-${column.slug}`} href={url(`/columns/${column.slug}/`)}>
+      <div class="notes-column-label"><span>{column.number} / {column.title}</span><span aria-hidden="true">↗</span></div>
+      <h2>{subtitles[index]}</h2><p>{summaries[index]}</p>
+      <div class="notes-column-bottom"><span>{keywords[index]}</span><small>{count ? `${count} 篇` : "待开篇"}</small></div>
+      <span class={`notes-column-art art-${index}`} aria-hidden="true" />
+    </a>;
+  })}
 </section>
-<style>
-  .columns-heading { margin-bottom: 1.25rem; }
-  .columns-heading h1 { font-size: 1.35rem; font-weight: 700; color: var(--primary); }
-  .columns-heading p { margin-top: .3rem; font-size: .9rem; opacity: .6; }
-  .columns-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; }
-  .column-link { display: flex; flex-direction: column; padding: 1rem; border: 1px solid var(--line-divider); border-radius: .85rem; transition: border-color .2s, transform .2s; }
-  .column-link:hover { border-color: var(--primary); transform: translateY(-2px); }
-  .column-link:focus-visible { outline: 2px solid var(--primary); outline-offset: 3px; }
-  .column-number { font-size: .7rem; letter-spacing: .12em; color: var(--primary); }
-  .column-link h2 { display: flex; justify-content: space-between; gap: .5rem; margin: .6rem 0; font-size: 1rem; font-weight: 700; }
-  .column-link h2 span { color: var(--primary); font-weight: 400; }
-  .column-link p { font-size: .85rem; line-height: 1.8; opacity: .7; }
-  .column-rhythm { font-size: .75rem; color: var(--primary); margin-top: auto; padding-top: 1rem; }
-  @media(max-width: 767px) { .columns-grid { grid-template-columns: 1fr; gap: .75rem; } .column-link { padding: 1rem 1.1rem; } .column-link p { font-size: .95rem; } .column-rhythm { padding-top: .6rem; } }
-  @media(prefers-reduced-motion: reduce) { .column-link { transition: none; } .column-link:hover { transform: none; } }
-</style>

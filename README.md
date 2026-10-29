@@ -38,6 +38,15 @@ git push
 
 ## 内容与主题
 
+博客采用 B「轻盈卡片」布局：白底蓝色、城市短横幅、三个栏目入口、图文文章卡片和右侧作者栏。文章页右侧显示可随滚动定位的目录，移动端将作者信息放在正文之后。支持明暗模式与减少动态效果偏好。
+
+- `src/styles/studio.css`：博客布局、配色、字体、响应式与悬停效果。
+- `src/components/HomeHero.astro`：首页介绍与城市横幅。
+- `src/components/PostCover.astro`：三篇已有文章的封面和后续文章的默认封面；front matter 的 `image` 可指定自定义图片。
+- `src/components/widget/SideBar.astro`：作者、栏目入口与文章目录。
+
+首页的文章数量、分类筛选和栏目篇数都从正式文章生成，不需要手动填写数字。分页后筛选仅作用于当前页，完整分类见栏目或归档。字体使用本地 Inter（OFL 许可见 `public/fonts/OFL-Inter.txt`），中文使用设备系统字体。
+
 三个栏目通过文章 front matter 的 `category` 归类：`前沿模型`、`算法与组件`、`开源项目拆解`。原有个人随笔保留为 `随笔`。栏目介绍与选题方向在 `src/data/columns.ts`；首页和栏目页自动收集对应文章。选题标签不代表已发布文章。
 
 前沿模型目标每周一篇；写作提纲见 [WRITING.md](WRITING.md)。

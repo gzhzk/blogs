@@ -43,6 +43,7 @@ export const siteConfig: SiteConfig = {
 export const navBarConfig: NavBarConfig = {
 	links: [
 		{ name: "文章", url: "/" },
+		{ name: "栏目", url: "/#columns" },
 		LinkPreset.Archive,
 		{ name: "个人主页", url: "https://gzhzk.github.io/", external: true },
 		{

@@ -1,0 +1,14 @@
+---
+import { Image } from "astro:assets";
+import city from "../assets/images/city-lake.png";
+---
+<section class="notes-hero" aria-labelledby="home-title">
+  <div class="notes-hero-photo"><Image src={city} alt="湖水与城市天际线，远处的高楼伸向蓝天" width={1400} format="webp" quality={85} loading="eager" fetchpriority="high" /></div>
+  <div class="notes-hero-copy">
+    <p class="notes-eyebrow">LEARNING, ONE NOTE AT A TIME.</p>
+    <h1 id="home-title">多想，多做。<br /><span>边试，边学。</span></h1>
+    <p class="notes-hero-intro">一个算法学习者的笔记本。<br />记录模型、算法，以及把它们搭成系统的过程。</p>
+    <a href="#articles" class="notes-hero-link">翻开最近的笔记 <span aria-hidden="true">↓</span></a>
+  </div>
+  <span class="notes-photo-caption" aria-hidden="true">ZE KAI · FIELD NOTES</span>
+</section>

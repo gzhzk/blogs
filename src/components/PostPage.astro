@@ -2,27 +2,36 @@
 import type { CollectionEntry } from "astro:content";
 import { getPostUrlBySlug } from "@utils/url-utils";
 import PostCard from "./PostCard.astro";
-
 const { page } = Astro.props;
-
-let delay = 0;
-const interval = 50;
+const entries = page.data as CollectionEntry<"posts">[];
+const categories = [...new Set(entries.map(entry => entry.data.category || "未分类"))];
 ---
-<div class="transition flex flex-col rounded-[var(--radius-large)] bg-[var(--card-bg)] py-1 md:py-0 md:bg-transparent md:gap-4 mb-4">
-    {page.data.map((entry: CollectionEntry<"posts">) => (
-        <PostCard
-                entry={entry}
-                title={entry.data.title}
-                tags={entry.data.tags}
-                category={entry.data.category}
-                published={entry.data.published}
-                updated={entry.data.updated}
-                url={getPostUrlBySlug(entry.slug)}
-                image={entry.data.image}
-                description={entry.data.description}
-                draft={entry.data.draft}
-                class:list="onload-animation"
-                style={`animation-delay: calc(var(--content-delay) + ${delay++ * interval}ms);`}
-        ></PostCard>
-    ))}
-</div>
+<post-list id="articles" class="notes-articles">
+  <div class="notes-section-heading"><h2>最近的笔记 <span>{String(entries.length).padStart(2, "0")}</span></h2><p>一点点积累，也是一种前进。</p></div>
+  <div class="notes-filters" role="group" aria-label={page.lastPage > 1 ? "筛选当前页文章" : "筛选文章"}>
+    <button type="button" data-category-filter="" aria-pressed="true">全部 <span>{entries.length}</span></button>
+    {categories.map(category => <button type="button" data-category-filter={category} aria-pressed="false">{category} <span>{entries.filter(entry => (entry.data.category || "未分类") === category).length}</span></button>)}
+    {page.lastPage > 1 && <span class="notes-page-label">当前页</span>}
+  </div>
+  <div class="notes-post-list">
+    {entries.map((entry, index) => <PostCard entry={entry} title={entry.data.title} tags={entry.data.tags} category={entry.data.category} published={entry.data.published} updated={entry.data.updated} url={getPostUrlBySlug(entry.slug)} image={entry.data.image} description={entry.data.description} draft={entry.data.draft} class="onload-animation" style={`animation-delay: ${index * 50}ms`} />)}
+  </div>
+  <p class="notes-list-end" aria-live="polite">— 笔记还在继续生长 —</p>
+</post-list>
+<script>
+  class PostList extends HTMLElement {
+    connectedCallback() { this.addEventListener("click", this.filterPosts); }
+    disconnectedCallback() { this.removeEventListener("click", this.filterPosts); }
+    filterPosts = (event: Event) => {
+      if (!(event.target instanceof Element)) return;
+      const button = event.target.closest<HTMLButtonElement>("[data-category-filter]");
+      if (!button || !this.contains(button)) return;
+      const category = button.dataset.categoryFilter;
+      this.querySelectorAll<HTMLButtonElement>("[data-category-filter]").forEach(item => item.setAttribute("aria-pressed", String(item === button)));
+      this.querySelectorAll<HTMLElement>("article[data-category]").forEach(post => { post.hidden = !!category && post.dataset.category !== category; });
+      const status = this.querySelector(".notes-list-end");
+      if (status) status.textContent = category ? `已显示 ${category} · ${this.querySelectorAll("article:not([hidden])").length} 篇` : "— 笔记还在继续生长 —";
+    };
+  }
+  if (!customElements.get("post-list")) customElements.define("post-list", PostList);
+</script>

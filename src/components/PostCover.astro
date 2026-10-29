@@ -1,0 +1,12 @@
+---
+import { Image } from "astro:assets";
+import city from "../assets/images/city-lake.png";
+interface Props { slug: string; }
+const { slug } = Astro.props;
+---
+{slug === "thoughts-20260611" ? <div class="notes-cover-photo"><Image src={city} alt="" width={600} format="webp" quality={80} loading="lazy" /><span>Think.<br />Try.<br />Learn.</span></div> : slug === "transformer" ?
+  <svg class="notes-attention-art" viewBox="0 0 300 210" fill="none" aria-hidden="true">
+    <path d="M73 154V56M150 154V56M227 154V56M73 154L150 56M150 154L73 56M150 154L227 56M227 154L150 56M73 154L227 56M227 154L73 56" stroke="currentColor" stroke-opacity=".28" stroke-width="1.5" />
+    <g fill="currentColor"><circle cx="73" cy="154" r="9" /><circle cx="150" cy="154" r="9" /><circle cx="227" cy="154" r="9" /><circle cx="73" cy="56" r="9" /><circle cx="150" cy="56" r="9" /><circle cx="227" cy="56" r="9" /></g>
+    <g font-size="12" font-family="monospace" fill="currentColor"><text x="68" y="187">Q</text><text x="145" y="187">K</text><text x="222" y="187">V</text><text x="74" y="25" letter-spacing="3">SELF ATTENTION</text></g>
+  </svg> : slug === "nlp-text-representations" ? <div class="notes-token-art" aria-hidden="true"><span>语言</span><i>↓</i><span class="notes-vector">[ .2, .8, .4 ]</span><i>↓</i><span>语义</span><small>FROM TOKENS TO MEANING</small></div> : <div class="notes-default-art" aria-hidden="true"><span>READ.</span><span>BUILD.</span><span>LEARN.</span></div>}

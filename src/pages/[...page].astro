@@ -3,6 +3,7 @@ import type { GetStaticPaths } from "astro";
 import Pagination from "../components/control/Pagination.astro";
 import PostPage from "../components/PostPage.astro";
 import ColumnsOverview from "../components/ColumnsOverview.astro";
+import HomeHero from "../components/HomeHero.astro";
 import { PAGE_SIZE } from "../constants/constants";
 import MainGridLayout from "../layouts/MainGridLayout.astro";
 import { getSortedPosts } from "../utils/content-utils";
@@ -19,7 +20,10 @@ const len = page.data.length;
 ---
 
 <MainGridLayout>
-    {page.currentPage === 1 && <ColumnsOverview />}
+    <div slot="masthead">
+      {page.currentPage === 1 ? <HomeHero /> : <h1 class="text-2xl font-semibold mb-6">笔记 · 第 {page.currentPage} 页</h1>}
+      <ColumnsOverview />
+    </div>
     <PostPage page={page}></PostPage>
     <Pagination class="mx-auto onload-animation" page={page} style={`animation-delay: calc(var(--content-delay) + ${(len)*50}ms)`}></Pagination>
 </MainGridLayout>
