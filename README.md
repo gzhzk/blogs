@@ -1,4 +1,4 @@
-# Zekai · Notes
+# Zekai.Felix
 
 个人博客：[gzhzk.github.io/blogs/](https://gzhzk.github.io/blogs/)。基于 Astro + [Fuwari](https://github.com/saicaca/fuwari)。
 

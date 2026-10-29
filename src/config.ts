@@ -8,7 +8,7 @@ import type {
 import { LinkPreset } from "./types/config";
 
 export const siteConfig: SiteConfig = {
-	title: "Zekai · Notes",
+	title: "Zekai.Felix",
 	subtitle: "关于 Agent、多模态视频与模型后训练的学习、实践和思考。",
 	lang: "zh_CN", // Language code, e.g. 'en', 'zh_CN', 'ja', etc.
 	themeColor: {
