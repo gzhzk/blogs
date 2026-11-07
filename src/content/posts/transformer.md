@@ -19,11 +19,11 @@ draft: false
 
 或许正是受到这一想法的启发，Transformer 才引入了自注意力机制，让模型能够同时关注序列中的所有位置，直接建立任意两个位置之间的依赖关系，从而实现对长文本的高效并行建模。
 
-![RNN展开结构示意图](/blogs/images/1/RNN.png)
+![RNN展开结构示意图](../../assets/images/posts/transformer/RNN.png)
 
 **图1: RNN展开结构示意图**
 
->>> 左侧为一个循环单元"U"，接收输入x<sub>t</sub>和前一时刻隐藏状态h<sub>t-1</sub>，输出当前隐藏状态h<sub>t</sub>。右侧展示该单元沿时间轴的展开，揭示了RNN处理序列数据的方式。
+>左侧为一个循环单元"U"，接收输入x<sub>t</sub>和前一时刻隐藏状态h<sub>t-1</sub>，输出当前隐藏状态h<sub>t</sub>。右侧展示该单元沿时间轴的展开，揭示了RNN处理序列数据的方式。
 
 ## Transformer 整体架构：编码器（Encoder）+ 解码器（Decoder）
 
@@ -31,11 +31,11 @@ draft: false
 
 在 **Transformer** 的整体架构设计中（**图2**），原作者设计了这两大模块：**编码器（Encoder）+ 解码器（Decoder）**。从功能上看，编码器是深度理解，将源序列转化为一个**上下文感知的向量序列**，并通过一系列复杂的向量运算在不断训练中逐渐提取出语义信息；而解码器是**条件生成**，一边参考这些语义向量，一边逐步生成出目标序列。这种结构天然适配机器翻译、文本摘要等序列到序列任务，也正是当前大语言模型的核心基础。接下来，我们一个模块一个模块拆解，感受作者天才般的智慧。
 
-![Transformer 模型整体架构示意图](/blogs/images/1/Transformer.png)
+![Transformer 模型整体架构示意图](../../assets/images/posts/transformer/Transformer.png)
 
 **图2: Transformer 模型整体架构示意图**
 
->>> 左侧为编码器（Encoder），右侧为解码器（Decoder），均为 N 层堆叠。输入侧以 Embedding 结合位置编码完成向量化；编码器通过自注意力与 FFN 提取上下文语义；解码器借助掩码自注意力 + 交互注意力 + FFN 生成目标序列；最后经线性层和 Softmax 输出预测概率。
+>左侧为编码器（Encoder），右侧为解码器（Decoder），均为 N 层堆叠。输入侧以 Embedding 结合位置编码完成向量化；编码器通过自注意力与 FFN 提取上下文语义；解码器借助掩码自注意力 + 交互注意力 + FFN 生成目标序列；最后经线性层和 Softmax 输出预测概率。
 
 ## 编码器结构：多头注意力、残差连接、层归一化、前馈网络
 
@@ -43,11 +43,11 @@ draft: false
 
 想象你正在做一篇英语阅读理解，有一个让做题变得又快又准的策略——带着问题找答案，这往往能帮助我们快速锁定文本中的关键信息，可能对着一篇上千词的文段，快速扫几眼就解决了，这其实就体现了注意力的分配。然而对于计算机，却难以快速理解。因此，我们需要一个机制，让模型能够基于输入动态地决定关注哪里。就像数据库查询：给定一个问题（Q），在所有记录的关键字（K）中查找匹配，然后返回对应的值（V）。下面的 **图3** 呈现了注意力机制的精髓：**缩放点积注意力（Scaled Dot-Product Attention）**。
 
-![缩放点积注意力（Scaled Dot-Product Attention）结构图](/blogs/images/1/QKV.png)
+![缩放点积注意力（Scaled Dot-Product Attention）结构图](../../assets/images/posts/transformer/QKV.png)
 
 **图3: 缩放点积注意力（Scaled Dot-Product Attention）结构示意图**
 
->>> 这是 Transformer 模型中的核心注意力计算机制，其中左侧输入Q（Query）和K（Key），右侧输入V（Value）。箭头指示了从Q、K计算相似度分数，经缩放、可选的掩码、SoftMax归一化，最后与V加权求和的数据流向。
+>这是 Transformer 模型中的核心注意力计算机制，其中左侧输入Q（Query）和K（Key），右侧输入V（Value）。箭头指示了从Q、K计算相似度分数，经缩放、可选的掩码、SoftMax归一化，最后与V加权求和的数据流向。
 
 **注意力机制的核心思想是对齐（Alignment）**，即同一序列内(即自注意力或不同序列间(即交叉注意力)词语之间的关系。注意力机制本质上是在计算序列中每个位置与其他所有位置的相关性分数。这种对齐不是简单的单词匹配，而是语义和语法层面的深度关联。
 
@@ -57,7 +57,7 @@ draft: false
 
 但是，这里有一个逻辑漏洞，点积将高维向量的所有维度信息压缩成一个标量，我们好像无法从这个单一得分中获知是哪些具体的语义特征（如“地点”或“主语”）主导了相关性判断。在前向传播时，点积确实是一个“黑箱”操作，输出一个代表整体相关性的分数。模型此刻并不关心里面0.73是0.72（地点维度贡献）+0.01，还是别的什么组合。怎么办呢？真正的魔法其实发生在反向传播。它按照梯度方向更新可学习的参数矩阵 W_q 和 W_k。在无数次的迭代中，一种高效的优化路径会逐渐浮现：要想显著提高点积总分，最有效的方法是让 q_went 在地点相关维度上获得高权重，同时让 k_home 在地点维度上也获得高权重。因为当这两个向量在地点维度上同时取较大值时，它们的乘积会对最终总和产生决定性影响。于是，通过梯度下降的“压力”，W_q 和 W_k 被调整，尽管点积计算仍输出一个混合值0.73，但其内部构成已被学习过程塑造成由“地点”维度主导。这也就解释了为什么 图4 中我提到变换矩阵都是学习得到的。
 
-![QKV由原矩阵X经过线性变换结构图](/blogs/images/1/attention-encoder-self-attention-qkv-transformation.png)
+![QKV由原矩阵X经过线性变换结构图](../../assets/images/posts/transformer/attention-encoder-self-attention-qkv-transformation.png)
 
 **图4: Q/K/V由原矩阵X经过线性变换示意图**
 
@@ -66,7 +66,7 @@ draft: false
 
 这是得到 Q、K、V 矩阵的关键步骤，对原矩阵 X 做线性变换，从而使原矩阵具备了不同的功能（查询、键、值），方便后续计算注意力的处理。注意，这里的变换矩阵 W_q、W_k、W_v 都是后续学习得到的。
 
-![Q与K的转置做点积运算图](/blogs/images/1/attention-encoder-self-attention-scores.png)
+![Q与K的转置做点积运算图](../../assets/images/posts/transformer/attention-encoder-self-attention-scores.png)
 
 **图5: Q与K的转置做点积运算示意图**
 
@@ -156,7 +156,7 @@ if __name__ == "__main__":
 
 ### 核心创新点2：Multi-Head Attention
 
-![多头注意力（Multi-Head Attention）结构图](/blogs/images/1/VKQ.png)
+![多头注意力（Multi-Head Attention）结构图](../../assets/images/posts/transformer/VKQ.png)
 
 **图5: 多头注意力（Multi-Head Attention）结构示意图**
 
